@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FinishActivity">
+
+    <TextView
+        android:id="@+id/done_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:textSize="50sp"
+        android:text="@string/done_msg"/>
+
+    <Button
+        android:id="@+id/repeat_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:layout_below="@+id/done_txt"
+        android:text="@string/repeat_txt"
+        android:textSize="30sp"/>
+
+    <Button
+        android:id="@+id/other_training_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:layout_below="@+id/repeat_btn"
+        android:text="@string/other_training_txt"
+        android:textSize="30sp"/>
+
+    <Button
+        android:id="@+id/other_muscle_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:layout_below="@+id/other_training_btn"
+        android:text="@string/other_muscle_txt"
+        android:textSize="30sp"/>
+
+</RelativeLayout>

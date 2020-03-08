@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "127143958235",
+    "firebase_url": "https://getapp-game.firebaseio.com",
+    "project_id": "getapp-game",
+    "storage_bucket": "getapp-game.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127143958235:android:220d7b3ff7d4d05980defe",
+        "android_client_info": {
+          "package_name": "com.example.get_app_game"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "127143958235-9oje1f8g0dnismi7rhd77fhqlhtmroho.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIbZD_SO-J4PSBPwEceStzO-NGZmgOGQE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "127143958235-9oje1f8g0dnismi7rhd77fhqlhtmroho.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
