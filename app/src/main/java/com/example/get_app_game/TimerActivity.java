@@ -43,12 +43,12 @@ public class TimerActivity extends AppCompatActivity{
             public void onClick(View v) {
                 String input = timeInput.getText().toString();
                 if(input.length() == 0){
-                    Toast.makeText(TimerActivity.this, "אנא הכנס זמן רצוי לאימון", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TimerActivity.this, "Please enter desired time", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 timeLeft = Long.parseLong(input) * 60000;
                 if(timeLeft == 0){
-                    Toast.makeText(TimerActivity.this, "זמן לא חוקי. נסה שוב", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TimerActivity.this, "Invalid time. Try again", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 setTimer();

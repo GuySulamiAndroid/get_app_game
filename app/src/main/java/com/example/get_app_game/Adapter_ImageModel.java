@@ -10,69 +10,115 @@ import java.util.ArrayList;
 
 public class Adapter_ImageModel extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final int VIEW_MUSCLES = 0;
+    private final int VIEW_EXERCISES = 1;
     private Context context;
     private ArrayList<Muscle> muscles;
+    private ArrayList<Exercise> exercises;
     private OnItemClickListener mItemClickListener;
 
-    public Adapter_ImageModel(Context context, ArrayList<Muscle> muscles){
+    public Adapter_ImageModel(Context context, ArrayList images){
         this.context = context;
-        this.muscles = muscles;
-    }
-
-    public void updateList(ArrayList<Muscle> muscles){
-        this.muscles = muscles;
-        notifyDataSetChanged();
+        this.muscles = images;
+        this.exercises = images;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list, parent, false);
-        return new ViewHolder(view);
+        if(viewType == VIEW_MUSCLES){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list, parent, false);
+            return new MuscleViewHolder(view);
+        }
+
+        if(viewType == VIEW_EXERCISES){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list, parent, false);
+            return new ExerciseViewHolder(view);
+        }
+        return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if(holder instanceof ViewHolder){
-            final Muscle muscle = getItem(position);
-            final ViewHolder genericViewHolder= (ViewHolder)holder;
+        if(holder instanceof MuscleViewHolder){
+            final Muscle muscle = (Muscle)getItem(position, holder);
+            final MuscleViewHolder genericViewHolder= (MuscleViewHolder)holder;
             genericViewHolder.muscle_img.setImageResource(muscle.getMuscleImgId());
+        }
+
+        if(holder instanceof ExerciseViewHolder){
+            final Exercise exercise = (Exercise)getItem(position, holder);
+            final ExerciseViewHolder genericViewHolder= (ExerciseViewHolder)holder;
+            genericViewHolder.exercise_img.setImageResource(exercise.getExerciseImgId());
         }
     }
 
     @Override
     public int getItemCount() {
-        if(muscles.size() > 6){
+        if(muscles.size() > 6 || exercises.size() > 6){
             return 6;
         }else{
             return muscles.size();
         }
     }
 
-    private Muscle getItem(int position){
-        return muscles.get(position);
+    private Object getItem(int position, RecyclerView.ViewHolder holder){
+        if(holder instanceof MuscleViewHolder){
+            return muscles.get(position);
+        }
+
+        if(holder instanceof ExerciseViewHolder){
+            return exercises.get(position);
+        }
+
+        return null;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class MuscleViewHolder extends RecyclerView.ViewHolder{
 
         private ImageButton muscle_img;
 
-        public ViewHolder(final View itemView){
+        public MuscleViewHolder(final View itemView){
             super(itemView);
-            this.muscle_img = itemView.findViewById(R.id.muscle_img);
+            this.muscle_img = itemView.findViewById(R.id.chosen_img);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mItemClickListener.onItemClick(itemView, getAdapterPosition(), getItem(getAdapterPosition()));
+                    mItemClickListener.onItemClick(itemView, getAdapterPosition(), getItem(getAdapterPosition(), MuscleViewHolder.this));
                 }
             });
         }
     }
 
-    public void removeAt(int position){
-        muscles.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, muscles.size());
+    public class ExerciseViewHolder extends RecyclerView.ViewHolder{
+
+        private ImageButton exercise_img;
+
+        public ExerciseViewHolder(final View itemView){
+            super(itemView);
+            this.exercise_img = itemView.findViewById(R.id.chosen_img);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mItemClickListener.onItemClick(itemView, getAdapterPosition(), getItem(getAdapterPosition(), ExerciseViewHolder.this));
+                }
+            });
+        }
+    }
+
+    public void removeAt(int position, RecyclerView.ViewHolder holder ){
+        if(holder instanceof MuscleViewHolder){
+            muscles.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, muscles.size());
+        }
+
+        if(holder instanceof ExerciseViewHolder){
+            exercises.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, exercises.size());
+        }
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener){
@@ -80,6 +126,6 @@ public class Adapter_ImageModel extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view, int position, Muscle muscle);
+        void onItemClick(View view, int position, Object relevantObj);
     }
 }

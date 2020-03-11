@@ -1,6 +1,7 @@
 package com.example.get_app_game;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,12 +14,9 @@ import android.widget.ImageButton;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MuscleFragment.SendMuscle {
 
-    private RecyclerView list_LST_muscles;
-    private ArrayList<Muscle> muscles = new ArrayList<>();
-    private Adapter_ImageModel adapter_imageModel;
-    private Muscle chest, arms, abs, back, legs, butt;
+    ExerciseFragment exerciseFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,47 +25,24 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
-        list_LST_muscles = findViewById(R.id.list_LST_muscles);
-        list_LST_muscles.setLayoutManager(new GridLayoutManager(this, 2));
-        initImageButtons();
-        createMusclesList();
-        initList();
+        showMuscleFragment();
     }
 
-    private void initImageButtons(){
-        chest = new Muscle("chest", R.drawable.chest);
-        arms = new Muscle("arms", R.drawable.arms);
-        abs = new Muscle("abs", R.drawable.abs);
-        back = new Muscle("back", R.drawable.back);
-        legs = new Muscle("legs", R.drawable.legs);
-        butt = new Muscle("butt", R.drawable.butt);
+    private void showMuscleFragment(){
+        MuscleFragment muscleFragment = new MuscleFragment(this);
+        FragmentManager fManager = getSupportFragmentManager();
+        fManager.beginTransaction().replace(R.id.muscle_layout, muscleFragment, muscleFragment.getTag()).commit();
     }
 
-    private void createMusclesList(){
-        muscles.add(chest);
-        muscles.add(arms);
-        muscles.add(abs);
-        muscles.add(back);
-        muscles.add(legs);
-        muscles.add(butt);
-        adapter_imageModel = new Adapter_ImageModel(this, muscles);
+    public void showExerciseFragment(Muscle muscle){
+        exerciseFragment = new ExerciseFragment(this);
+        FragmentManager fManager = getSupportFragmentManager();
+        fManager.beginTransaction().replace(R.id.exercise_layout, exerciseFragment, exerciseFragment.getTag()).commit();
+        sendRelevantMuscle(muscle);
     }
 
-    private void initList(){
-        list_LST_muscles.setHasFixedSize(true);
-        list_LST_muscles.setAdapter(adapter_imageModel);
-        adapter_imageModel.setOnItemClickListener(new Adapter_ImageModel.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position, Muscle muscle) {
-                moveToTimer();
-            }
-        });
+    @Override
+    public void sendRelevantMuscle(Muscle muscle) {
+        exerciseFragment.setRelevantExercises(muscle);
     }
-
-    private void moveToTimer(){
-        Intent intent = new Intent(MainActivity.this, TimerActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
 }

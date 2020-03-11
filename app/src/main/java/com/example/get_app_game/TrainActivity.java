@@ -22,8 +22,6 @@ public class TrainActivity extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private long timeLeft, endTime;
     private boolean timerRunning;
-    private VideoView videoView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +38,7 @@ public class TrainActivity extends AppCompatActivity {
     }
 
     private void initVideo(){
+        VideoView videoView;
         videoView = findViewById(R.id.videoView);
         Uri uri = Uri.parse("https://firebasestorage.googleapis.com/v0/b/getapp-game.appspot.com/o/Best%20abs%20exercises-%20Abdominal%20Crunch.mp4?alt=media&token=876572cd-89cd-4bcc-85bd-8f1f95257166");
         videoView.setVideoURI(uri);

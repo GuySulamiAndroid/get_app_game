@@ -22,6 +22,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
         android:layout_below="@+id/done_txt"
+        android:textAllCaps="false"
         android:text="@string/repeat_txt"
         android:textSize="30sp"/>
 
@@ -32,6 +33,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
         android:layout_below="@+id/repeat_btn"
+        android:textAllCaps="false"
         android:text="@string/other_training_txt"
         android:textSize="30sp"/>
 
@@ -42,6 +44,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
         android:layout_below="@+id/other_training_btn"
+        android:textAllCaps="false"
         android:text="@string/other_muscle_txt"
         android:textSize="30sp"/>
 
