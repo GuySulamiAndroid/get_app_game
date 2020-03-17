@@ -176,6 +176,13 @@ public class TrainActivity extends AppCompatActivity {
 //        countDownTimer.cancel();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        videoView.stopPlayback();
+        countDownTimer.cancel();
+    }
+
     public void updateTimer(){
         int minutes = (int)(timeLeft / 1000) / 60;
         int seconds = (int)(timeLeft / 1000) % 60;

@@ -18,23 +18,12 @@
         android:text="@string/done_msg"/>
 
     <Button
-        android:id="@+id/repeat_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:layout_below="@+id/done_txt"
-        android:textAllCaps="false"
-        android:text="@string/repeat_txt"
-        android:textSize="30sp"/>
-
-    <Button
         android:id="@+id/other_training_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:layout_below="@+id/repeat_btn"
+        android:layout_marginTop="120dp"
+        android:layout_below="@+id/done_txt"
         android:textAllCaps="false"
         android:text="@string/other_training_txt"
         android:textSize="30sp"/>

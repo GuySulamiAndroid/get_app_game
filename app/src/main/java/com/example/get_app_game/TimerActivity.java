@@ -21,8 +21,6 @@ public class TimerActivity extends AppCompatActivity implements Serializable {
     private Button startBtn, setTimeBtn;
     private long timeLeft;
     private Exercise current_exercise;
-    private boolean isRepeat;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
