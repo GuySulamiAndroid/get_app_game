@@ -10,14 +10,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.Serializable;
 import java.util.Locale;
 
-public class TimerActivity extends AppCompatActivity{
+public class TimerActivity extends AppCompatActivity implements Serializable {
 
     private EditText timeInput;
     private TextView timeTxt;
     private Button startBtn, setTimeBtn;
     private long timeLeft;
+    private Exercise current_exercise;
+    private boolean isRepeat;
 
 
     @Override
@@ -35,20 +39,22 @@ public class TimerActivity extends AppCompatActivity{
         timeTxt = findViewById(R.id.time_txt);
         startBtn = findViewById(R.id.start_btn);
         setTimeBtn = findViewById(R.id.set_time_btn);
+        current_exercise = (Exercise)getIntent().getSerializableExtra("CURRENT_EXERCISE");
     }
 
     private void setTrainingTime(){
         setTimeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeKeyBoard();
                 String input = timeInput.getText().toString();
                 if(input.length() == 0){
-                    Toast.makeText(TimerActivity.this, "Please enter desired time", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TimerActivity.this, Constant.TIME_REQUIRED_MSG, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 timeLeft = Long.parseLong(input) * 60000;
                 if(timeLeft == 0){
-                    Toast.makeText(TimerActivity.this, "Invalid time. Try again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TimerActivity.this, Constant.INVALID_TIME_MSG, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 setTimer();
@@ -68,6 +74,16 @@ public class TimerActivity extends AppCompatActivity{
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String input = timeInput.getText().toString();
+                if(input.length() == 0) {
+                    Toast.makeText(TimerActivity.this, Constant.TIME_REQUIRED_MSG, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                timeLeft = Long.parseLong(input) * 60000;
+                if(timeLeft == 0){
+                    Toast.makeText(TimerActivity.this, Constant.INVALID_TIME_MSG , Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 moveToTrainActivity();
             }
         });
@@ -83,9 +99,7 @@ public class TimerActivity extends AppCompatActivity{
     private void moveToTrainActivity(){
         Intent intent = new Intent(TimerActivity.this, TrainActivity.class);
         intent.putExtra("TIME_SELECTED", timeLeft);
+        intent.putExtra("CURRENT_EXERCISE", current_exercise);
         startActivity(intent);
     }
-
-
-
 }

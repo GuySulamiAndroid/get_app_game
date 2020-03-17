@@ -1,7 +1,7 @@
 package com.example.get_app_game;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -11,59 +11,103 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
-
 import java.util.Locale;
+
 
 public class TrainActivity extends AppCompatActivity {
 
     private TextView timeSelected;
     private CountDownTimer countDownTimer;
     private long timeLeft, endTime;
+    private VideoView videoView;
+    private int stopPosition;
+    private boolean videoInStart = true;
     private boolean timerRunning;
+    private ImageButton playBtn;
+    private SoundPlayer sound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_train);
         initVars();
-        startStop();
     }
 
     private void initVars(){
         timeSelected = findViewById(R.id.time_text);
+        playBtn = findViewById(R.id.playBTN);
         timeLeft = getIntent().getLongExtra("TIME_SELECTED", 0);
-        initVideo();
+        sound = new SoundPlayer(this);
+        videoView = findViewById(R.id.videoView);
+        updateTimer();
+        playBtn.setImageResource(R.drawable.pause);
+        Exercise current_exercise = (Exercise)getIntent().getSerializableExtra("CURRENT_EXERCISE");
+        if(current_exercise != null){
+            initVideo(current_exercise);
+        }
     }
 
-    private void initVideo(){
-        VideoView videoView;
-        videoView = findViewById(R.id.videoView);
-        Uri uri = Uri.parse("https://firebasestorage.googleapis.com/v0/b/getapp-game.appspot.com/o/Best%20abs%20exercises-%20Abdominal%20Crunch.mp4?alt=media&token=876572cd-89cd-4bcc-85bd-8f1f95257166");
+    private void initVideo(Exercise current_exercise){
+        Uri uri = Uri.parse(current_exercise.getVideoUri());
         videoView.setVideoURI(uri);
         videoView.start();
+        handleVideoDelay(videoView);
+        playVideoAgain(videoView);
+    }
+
+    private void handleVideoDelay(final VideoView videoView){
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                if(mp.getDuration() > timeLeft && videoInStart){
+                    Toast.makeText(TrainActivity.this, Constant.DEFAULT_TIME_MSG, Toast.LENGTH_LONG).show();
+                    timeLeft = Constant.DEFAULT_TIME;
+                }
+                startStop();
+                handlePlayBtn();
+            }
+        });
+    }
+
+    private void handlePlayBtn(){
+        playBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(videoView.isPlaying()){
+                    stopPosition = videoView.getCurrentPosition();
+                    videoView.pause();
+                    videoInStart = false;
+                    stopTimer();
+                    playBtn.setImageResource(R.drawable.play);
+                }else{
+                    videoView.seekTo(stopPosition);
+                    videoView.start();
+                    startTimer();
+                    playBtn.setImageResource(R.drawable.pause);
+                }
+            }
+        });
+    }
+
+    private void playVideoAgain(VideoView videoView) {
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 mp.start();
             }
         });
-
     }
-    private void setTimeTxt(){
-
-    }
-
-//    private void handle_stopper(){
-//        startBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startStop();
-//            }
-//        });
-////        updateTimer();
-//    }
 
     private void startStop(){
         if(timerRunning){
@@ -85,6 +129,7 @@ public class TrainActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 timerRunning = false;
+                sound.playTimeOverSound();
                 vibrate();
                 moveToFinishActivity();
             }
@@ -96,6 +141,39 @@ public class TrainActivity extends AppCompatActivity {
     public void stopTimer(){
         countDownTimer.cancel();
         timerRunning = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        videoView.seekTo(stopPosition);
+        videoView.start();
+        //        countDownTimer = new CountDownTimer(timeByStop, 1000) {
+//            @Override
+//            public void onTick(long millisUntilFinished) {
+//                timeByStop = millisUntilFinished;
+//                updateTimer();
+//            }
+//
+//            @Override
+//            public void onFinish() {
+//                timerRunning = false;
+//                sound.playTimeOverSound();
+//                vibrate();
+//                moveToFinishActivity();
+//            }
+//        }.start();
+//
+//        timerRunning = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopPosition = videoView.getCurrentPosition();
+        videoView.pause();
+        videoInStart = false;
+//        countDownTimer.cancel();
     }
 
     public void updateTimer(){
@@ -119,8 +197,10 @@ public class TrainActivity extends AppCompatActivity {
         }
     }
 
+
+    //2 functions to handle timer delay between orientation modes
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("TIME_LEFT", timeLeft);
         outState.putBoolean("TIME_RUNNING", timerRunning);
@@ -128,7 +208,7 @@ public class TrainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         timeLeft = savedInstanceState.getLong("TIME_LEFT");
         timerRunning = savedInstanceState.getBoolean("TIME_RUNNING");

@@ -13,14 +13,17 @@ public class Adapter_ImageModel extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final int VIEW_MUSCLES = 0;
     private final int VIEW_EXERCISES = 1;
     private Context context;
-    private ArrayList<Muscle> muscles;
-    private ArrayList<Exercise> exercises;
+    private ArrayList images;
     private OnItemClickListener mItemClickListener;
 
     public Adapter_ImageModel(Context context, ArrayList images){
         this.context = context;
-        this.muscles = images;
-        this.exercises = images;
+        this.images = images;
+    }
+
+    public void updateList(ArrayList images){
+        this.images = images;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -35,18 +38,19 @@ public class Adapter_ImageModel extends RecyclerView.Adapter<RecyclerView.ViewHo
             return new ExerciseViewHolder(view);
         }
         return null;
+
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if(holder instanceof MuscleViewHolder){
-            final Muscle muscle = (Muscle)getItem(position, holder);
+            final Muscle muscle = (Muscle)getItem(position);
             final MuscleViewHolder genericViewHolder= (MuscleViewHolder)holder;
             genericViewHolder.muscle_img.setImageResource(muscle.getMuscleImgId());
         }
 
         if(holder instanceof ExerciseViewHolder){
-            final Exercise exercise = (Exercise)getItem(position, holder);
+            final Exercise exercise = (Exercise)getItem(position);
             final ExerciseViewHolder genericViewHolder= (ExerciseViewHolder)holder;
             genericViewHolder.exercise_img.setImageResource(exercise.getExerciseImgId());
         }
@@ -54,23 +58,28 @@ public class Adapter_ImageModel extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        if(muscles.size() > 6 || exercises.size() > 6){
+        if(images.size() > 6){
             return 6;
         }else{
-            return muscles.size();
+            return images.size();
         }
     }
 
-    private Object getItem(int position, RecyclerView.ViewHolder holder){
-        if(holder instanceof MuscleViewHolder){
-            return muscles.get(position);
+    @Override
+    public int getItemViewType(int position){
+        if(images.get(position) instanceof  Muscle){
+            return VIEW_MUSCLES;
         }
 
-        if(holder instanceof ExerciseViewHolder){
-            return exercises.get(position);
+        if(images.get(position) instanceof Exercise){
+            return VIEW_EXERCISES;
         }
 
-        return null;
+        return -1;
+    }
+
+    private Object getItem(int position){
+        return images.get(position);
     }
 
     public class MuscleViewHolder extends RecyclerView.ViewHolder{
@@ -84,7 +93,7 @@ public class Adapter_ImageModel extends RecyclerView.Adapter<RecyclerView.ViewHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mItemClickListener.onItemClick(itemView, getAdapterPosition(), getItem(getAdapterPosition(), MuscleViewHolder.this));
+                    mItemClickListener.onItemClick(itemView, getAdapterPosition(), getItem(getAdapterPosition()));
                 }
             });
         }
@@ -101,24 +110,16 @@ public class Adapter_ImageModel extends RecyclerView.Adapter<RecyclerView.ViewHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mItemClickListener.onItemClick(itemView, getAdapterPosition(), getItem(getAdapterPosition(), ExerciseViewHolder.this));
+                    mItemClickListener.onItemClick(itemView, getAdapterPosition(), getItem(getAdapterPosition()));
                 }
             });
         }
     }
 
-    public void removeAt(int position, RecyclerView.ViewHolder holder ){
-        if(holder instanceof MuscleViewHolder){
-            muscles.remove(position);
+    public void removeAt(int position){
+            images.remove(position);
             notifyItemRemoved(position);
-            notifyItemRangeChanged(position, muscles.size());
-        }
-
-        if(holder instanceof ExerciseViewHolder){
-            exercises.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, exercises.size());
-        }
+            notifyItemRangeChanged(position, images.size());
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener){

@@ -1,22 +1,19 @@
 package com.example.get_app_game;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class MainActivity extends AppCompatActivity implements MuscleFragment.SendMuscle {
 
-    ExerciseFragment exerciseFragment;
+public class MainActivity extends FragmentActivity implements Serializable {
+
+    protected static Muscle current_muscle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,23 +23,32 @@ public class MainActivity extends AppCompatActivity implements MuscleFragment.Se
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         showMuscleFragment();
+        directToExFragment();
     }
 
     private void showMuscleFragment(){
         MuscleFragment muscleFragment = new MuscleFragment(this);
         FragmentManager fManager = getSupportFragmentManager();
-        fManager.beginTransaction().replace(R.id.muscle_layout, muscleFragment, muscleFragment.getTag()).commit();
+        fManager.beginTransaction().replace(R.id.images_layout, muscleFragment, muscleFragment.getTag()).commit();
     }
 
     public void showExerciseFragment(Muscle muscle){
-        exerciseFragment = new ExerciseFragment(this);
+        current_muscle = muscle;
+        ExerciseFragment exerciseFragment = new ExerciseFragment(this);
         FragmentManager fManager = getSupportFragmentManager();
-        fManager.beginTransaction().replace(R.id.exercise_layout, exerciseFragment, exerciseFragment.getTag()).commit();
-        sendRelevantMuscle(muscle);
+        fManager.beginTransaction().replace(R.id.images_layout, exerciseFragment, exerciseFragment.getTag()).addToBackStack("EXERCISE_TAG").commit();
     }
 
-    @Override
-    public void sendRelevantMuscle(Muscle muscle) {
-        exerciseFragment.setRelevantExercises(muscle);
+    private void directToExFragment(){
+        boolean getBack = getIntent().getBooleanExtra("TO_EXERCISE", false);
+        if(getBack){
+            showExerciseFragment(current_muscle);
+        }
+    }
+
+    public void moveToTimerActivity(Exercise exercise){
+        Intent intent = new Intent(MainActivity.this, TimerActivity.class);
+        intent.putExtra("CURRENT_EXERCISE", exercise);
+        startActivity(intent);
     }
 }

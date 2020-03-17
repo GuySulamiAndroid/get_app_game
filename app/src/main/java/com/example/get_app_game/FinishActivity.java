@@ -10,6 +10,7 @@ import android.widget.Button;
 public class FinishActivity extends AppCompatActivity {
 
     private Button repeatBtn, otherTrainingBtn, otherMuscleBtn;
+    private boolean backToEx = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,7 @@ public class FinishActivity extends AppCompatActivity {
         repeatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                backToTrainActivity();
+                backToTimerActivity();
             }
         });
     }
@@ -40,6 +41,7 @@ public class FinishActivity extends AppCompatActivity {
         otherTrainingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                backToExerciseScreen();
             }
         });
     }
@@ -49,17 +51,26 @@ public class FinishActivity extends AppCompatActivity {
         otherMuscleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                backToMainActivity();
+                backToMusclesScreen();
             }
         });
     }
 
-    private void backToTrainActivity(){
-        Intent intent = new Intent(FinishActivity.this, TrainActivity.class);
+    private void backToTimerActivity(){
+        Intent intent = new Intent(FinishActivity.this, TimerActivity.class);
         startActivity(intent);
+        finish();
     }
 
-    private void backToMainActivity() {
+    private void backToExerciseScreen(){
+        Intent intent = new Intent(FinishActivity.this, MainActivity.class);
+        intent.putExtra("TO_EXERCISE", backToEx);
+        startActivity(intent);
+        finish();
+    }
+
+
+    private void backToMusclesScreen() {
         Intent intent = new Intent(FinishActivity.this, MainActivity.class);
         startActivity(intent);
         finish();

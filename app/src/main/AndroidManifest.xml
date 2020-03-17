@@ -8,13 +8,17 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/get_app_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".FinishActivity"></activity>
-        <activity android:name=".TrainActivity" />
+        <activity
+            android:name=".FinishActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".TrainActivity"
+            android:configChanges="orientation|screenSize"/>
         <activity
             android:name=".TimerActivity"
             android:label="@string/title_activity_timer"

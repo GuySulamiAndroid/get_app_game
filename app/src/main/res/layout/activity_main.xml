@@ -8,18 +8,10 @@
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:id="@+id/muscle_layout"
+        android:id="@+id/images_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/exercise_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-    </LinearLayout>
-
 
 </LinearLayout>
